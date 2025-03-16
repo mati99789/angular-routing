@@ -7,7 +7,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   standalone: true,
   templateUrl: './user-tasks.component.html',
   styleUrl: './user-tasks.component.css',
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, RouterLink],
 })
 export class UserTasksComponent implements OnInit {
   private userSerivce = inject(UsersService);

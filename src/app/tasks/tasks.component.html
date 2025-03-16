@@ -1,8 +1,8 @@
 <ul>
-  @if (userTasks.length === 0) {
+  @if (userTasks().length === 0) {
     <p>There are no tasks yet. Start adding some!</p>
   } @else {
-    @for (task of userTasks; track task.id) {
+    @for (task of userTasks(); track task.id) {
       <li>
         <app-task [task]="task" />
       </li>
