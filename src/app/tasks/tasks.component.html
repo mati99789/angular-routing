@@ -1,3 +1,9 @@
+<p>
+
+  <a routerLink="./"  [queryParams]="{sort: sort() === 'asc' ? 'desc' : 'asc'}">
+    Sort {{sort() === 'asc' ? 'Descending' : 'Ascending'}}
+  </a>
+</p>
 <ul>
   @if (userTasks().length === 0) {
     <p>There are no tasks yet. Start adding some!</p>
