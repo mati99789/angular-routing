@@ -2,7 +2,12 @@ import { Component, computed, effect, inject, input } from '@angular/core';
 import { TaskComponent } from './task/task.component';
 import { Task } from './task/task.model';
 import { TasksService } from './tasks.service';
-import { RouterLink } from '@angular/router';
+import {
+  ActivatedRouteSnapshot,
+  ResolveFn,
+  RouterLink,
+  RouterStateSnapshot,
+} from '@angular/router';
 
 @Component({
   selector: 'app-tasks',
@@ -13,10 +18,24 @@ import { RouterLink } from '@angular/router';
 })
 export class TasksComponent {
   userId = input.required<string>();
-
-  private tasksService = inject(TasksService);
-
-  userTasks = computed(() => this.tasksService.allTasks().filter((task) => task.userId === this.userId()).sort((a, b) => this.sort() === 'asc' ? a.title.localeCompare(b.title) : b.title.localeCompare(a.title)));
-
+  userTasks = input.required<Task[]>();
   sort = input<'asc' | 'desc'>('asc');
 }
+
+export const resolveTasks: ResolveFn<Task[]> = (
+  route: ActivatedRouteSnapshot,
+  state: RouterStateSnapshot
+) => {
+  const tasksService = inject(TasksService);
+  const sort = route.queryParams['sort'];
+  
+  const tasks = tasksService
+    .allTasks()
+    .filter((task) => task.userId === route.paramMap.get('userId'))
+    .sort((a, b) =>
+      sort === 'asc'
+        ? a.title.localeCompare(b.title)
+        : b.title.localeCompare(a.title)
+    );
+  return tasks;
+};

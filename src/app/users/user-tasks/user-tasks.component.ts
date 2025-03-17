@@ -1,6 +1,21 @@
-import { Component, computed, inject, input, OnInit, DestroyRef } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  input,
+  OnInit,
+  DestroyRef,
+} from '@angular/core';
 import { UsersService } from '../users.service';
-import { ActivatedRoute, ActivatedRouteSnapshot, ResolveFn, RouterLink, RouterLinkActive, RouterOutlet, RouterStateSnapshot } from '@angular/router';
+import {
+  ActivatedRoute,
+  ActivatedRouteSnapshot,
+  ResolveFn,
+  RouterLink,
+  RouterLinkActive,
+  RouterOutlet,
+  RouterStateSnapshot,
+} from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 @Component({
   selector: 'app-user-tasks',
@@ -10,10 +25,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   imports: [RouterOutlet, RouterLink],
 })
 export class UserTasksComponent {
-  private userSerivce = inject(UsersService);
-  private activatedRoute = inject(ActivatedRoute);
-  private destroyRef = inject(DestroyRef);
-
   userName = input.required<string>();
 
   // Other way to do it
@@ -27,17 +38,24 @@ export class UserTasksComponent {
   //   this.activatedRoute.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
   //     const userId = params.get('userId')!;
   //     this.userName = this.userSerivce.users.find((user) => user.id === userId)?.name || '';
-
-
   //   });
-
-
   // }
 }
 
-
-export const resolveUserName: ResolveFn<string> = (activatedRoute: ActivatedRouteSnapshot,  state: RouterStateSnapshot) => {
-  const userService = inject(UsersService); 
+export const resolveUserName: ResolveFn<string> = (
+  activatedRoute: ActivatedRouteSnapshot,
+  state: RouterStateSnapshot
+) => {
+  const userService = inject(UsersService);
   const userId = activatedRoute.paramMap.get('userId')!;
   return userService.users.find((user) => user.id === userId)?.name || '';
-}
+};
+
+export const reolveTitle: ResolveFn<string> = (
+  activatedRoute,
+  state
+) => {
+  const userService = inject(UsersService);
+  const userId = activatedRoute.paramMap.get('userId')!;
+  return userService.users.find((user) => user.id === userId)?.name + ' Tasks' || '';
+};
