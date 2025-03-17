@@ -1,6 +1,6 @@
 import { Component, computed, inject, input, OnInit, DestroyRef } from '@angular/core';
 import { UsersService } from '../users.service';
-import { ActivatedRoute, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { ActivatedRoute, ActivatedRouteSnapshot, ResolveFn, RouterLink, RouterLinkActive, RouterOutlet, RouterStateSnapshot } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 @Component({
   selector: 'app-user-tasks',
@@ -9,12 +9,12 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   styleUrl: './user-tasks.component.css',
   imports: [RouterOutlet, RouterLink],
 })
-export class UserTasksComponent implements OnInit {
+export class UserTasksComponent {
   private userSerivce = inject(UsersService);
   private activatedRoute = inject(ActivatedRoute);
   private destroyRef = inject(DestroyRef);
 
-  userName = ''
+  userName = input.required<string>();
 
   // Other way to do it
   // userId = input.required<string>();
@@ -23,12 +23,21 @@ export class UserTasksComponent implements OnInit {
   //   () => this.userSerivce.users.find((user) => user.id === this.userId())?.name
   // );
 
-  ngOnInit(): void {
-    this.activatedRoute.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
-      const userId = params.get('userId')!;
-      this.userName = this.userSerivce.users.find((user) => user.id === userId)?.name || '';
-    });
+  // ngOnInit(): void {
+  //   this.activatedRoute.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
+  //     const userId = params.get('userId')!;
+  //     this.userName = this.userSerivce.users.find((user) => user.id === userId)?.name || '';
 
 
-  }
+  //   });
+
+
+  // }
+}
+
+
+export const resolveUserName: ResolveFn<string> = (activatedRoute: ActivatedRouteSnapshot,  state: RouterStateSnapshot) => {
+  const userService = inject(UsersService); 
+  const userId = activatedRoute.paramMap.get('userId')!;
+  return userService.users.find((user) => user.id === userId)?.name || '';
 }
